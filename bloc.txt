@@ -1,0 +1,108 @@
+
+this.props.navigation.navigate('${newTabIndex}')
+
+export default class App extends React.Component { 
+  App = StackNavigator({
+    Home: { screen: Home },
+    Profile: { screen: Home },
+  });
+  static navigationOptions = {
+    title: 'Welcome',
+  }; 
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <View style={{ flex: 1 }}>
+        <ImageBackground
+          style={styles.background}
+          source={require("./public/img/home-background.png")}
+        >
+          <View style={styles.wrapper}>
+            <View style={styles.wrapperLogoBrand}>
+              <Image
+                style={styles.logo}
+                source={require("./public/img/logo.png")}
+              />
+              <Image
+                style={styles.brand}
+                source={require("./public/img/devawaytitle.png")}
+              />
+            </View>
+            <View style={styles.separatorLogoBrand} />
+          </View>
+          <View style={styles.wrapperHeaderText}>
+            <Text style={styles.headerTextOne}>
+              Use our skills to share a human
+            </Text>
+            <Text style={styles.headerTextTwo}>experience, it's a win-win</Text>
+          </View>
+        </ImageBackground>
+        
+        <BottomNavigation
+          labelColor="black"
+          activeLabelColor="red"
+          style={{ height: 56, elevation: 8, position: 'absolute', left: 0, bottom: 0, right: 0 }}
+          onTabChange={(newTabIndex) => navigate('Profile')}
+        >
+          <Tab
+            label="SEARCH"
+            icon={<Icon size={24} color="black" name="search" />}
+            activeIcon={<Icon size={24} color="red" name="search" />}
+          />
+          <Tab
+            label="MESSAGE"
+            icon={<Icon size={24} color="black" name="message" />}
+            activeIcon={<Icon size={24} color="red" name="message" />}
+          />
+          <Tab
+            label="PROFIL"
+            icon={<Icon size={24} color="black" name="account-box" />}
+            activeIcon={<Icon size={24} color="red" name="book" />}
+          />
+        </BottomNavigation>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    flexDirection: "column", //Pour que le logo et la brand soit sur la meme ligne
+    justifyContent: "center"
+  },
+  wrapper: {
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  wrapperLogoBrand: {
+    flexDirection: "row" //Pour que le logo et la brand soit sur la meme ligne
+  },
+  logo: {
+    maxWidth: 80,
+    maxHeight: 52
+  },
+  brand: {
+    marginTop: 5,
+    marginLeft: 15,
+    maxWidth: 240,
+    maxHeight: 40
+  },
+  separatorLogoBrand: {
+    borderBottomColor: "white",
+    borderBottomWidth: 2
+  },
+  wrapperHeaderText: {
+    marginTop: 20
+  },
+  headerTextOne: {
+    fontSize: 18,
+    textAlign: "center",
+    color: "white"
+  },
+  headerTextTwo: {
+    fontSize: 18,
+    textAlign: "center",
+    color: "white"
+  }
+});
