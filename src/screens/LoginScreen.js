@@ -12,15 +12,11 @@ import t from 'tcomb-form-native';
 
 const Form = t.form.Form;
 
-export default class LoginScreen extends React.Component {
 
-    
+export default class LoginScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            user: {}
-        };
 
         this.User = t.struct({
             email: t.String,
@@ -29,9 +25,12 @@ export default class LoginScreen extends React.Component {
             c_password: t.String,
             terms: t.Boolean
         });
-
+        
         this.options = {
             fields: {
+                email: {
+                    label: "Email"
+                },
                 c_password: {
                     label: 'Confirm your password',
                     password: true,
@@ -46,36 +45,16 @@ export default class LoginScreen extends React.Component {
                 },
             },  
         };
+    
+        this.state = { 
+            options: this.options,
+            value: null
+        };
+    }
 
-        this.validate = null;
-    }
-    static navigationOptions = {
-        title: 'PROFILE',
-    }
     handleSubmit = () => {
-        const {navigate} = this.props.navigation;
         const value = this._form.getValue(); // use that ref to get the form value
         if (value) {
-            this.setState({
-                options: t.update(this.state.options, {
-                  fields: {
-                    username: {
-                      editable: {'$set': false}
-                    },
-                    password: {
-                      editable: {'$set': false},
-                      hasError: {'$set': false},
-                      error: {'$set': null}
-                    },
-                    email: {
-                        editable: {'$set': false}
-                    },
-                    c_password: {
-                      editable: {'$set': false},
-                    }
-                  }
-                })
-              });
             fetch('https://limitless-springs-83583.herokuapp.com/api/register', {
                 method: 'POST',
                 headers: {
@@ -89,34 +68,32 @@ export default class LoginScreen extends React.Component {
                 return response.json()  //we only get here if there is no error
             })
             .then( json => {
+                alert("success : "+json);
                 console.log(json);
-                this.props.dispatch(doSomethingWithResult(json)) 
+                this.props.dispatch(doSomethingWithResult(json))
             })
             .catch( err => {
                 err.text().then( errorMessage => {
-                    this.setState({
-                        options: t.update(this.state.options, {
-                          fields: {
-                            username: {
-                              editable: {'$set': true}
-                            },
-                            password: {
-                              editable: {'$set': true},
-                              hasError: {'$set': true},
-                              error: {'$set': 'Server error!'}
-                            }
+                    //alert(errorMessage);
+                    //console.log(errorMessage);
+                    let globalError = [];
+                    Object.keys(errorMessage.error).map(key => {
+                        alert(key);
+                        globalError[key] = key + " : " + {"errorMessage": errorMessage.error[key] };
+                    });
+                    alert(globalError);
+                    var options = t.update(this.state.options, {
+                        fields: {
+                            
+                          email: {
+                            label: {'$set': "GROS PD"}
                           }
-                        })
+                        }
                       });
-                    console.log(errorMessage);
-                    alert(errorMessage);
+                    this.setState({options: options, value: value});
                 })
             })
         }
-    }
-
-    onChange(value) {
-        this.setState({value});
     }
 
     render() {
@@ -125,9 +102,8 @@ export default class LoginScreen extends React.Component {
                 <Form 
                     ref={c => this._form = c} // assign a ref
                     type={this.User} 
-                    options={this.options}
+                    options={this.state.options}
                     value={this.state.value}
-                    onChange={this.onChange}
                 />
                 <TouchableHighlight style={styles.button} onPress={this.handleSubmit} underlayColor='#99d9f4'>
                     <Text style={styles.buttonText}>Sign Up!</Text>
