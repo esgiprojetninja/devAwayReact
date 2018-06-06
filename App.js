@@ -9,18 +9,25 @@ import {
   Button
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator, createStackNavigator, NavigationActions } from 'react-navigation';
 
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import MessageScreen from './src/screens/MessageScreen';
+import SubscribeScreen from './src/screens/SubscribeScreen';
 
 import LoginScreen from './src/screens/LoginScreen';
+
+const navigatorProfile = createStackNavigator({
+  USERPROFILE: ProfileScreen,
+  LOGIN: {screen: LoginScreen, headerMode: 'none'},
+  SUBSCRIBE: SubscribeScreen,
+});
 
 export default createBottomTabNavigator({
     EXPLORE: HomeScreen,
     MESSAGE: MessageScreen,
-    PROFILE: LoginScreen
+    PROFILE: navigatorProfile
   },
   {
     navigationOptions: ({ navigation }) => ({
@@ -34,7 +41,7 @@ export default createBottomTabNavigator({
         } else if (routeName === 'MESSAGE') {
           iconName = `ios-chatboxes${focused ? '' : '-outline'}`;
         }
-        
+
         return <Ionicons name={iconName} size={25} color={tintColor} />;
       },
     }),
@@ -46,4 +53,3 @@ export default createBottomTabNavigator({
       }
   }
 });
-

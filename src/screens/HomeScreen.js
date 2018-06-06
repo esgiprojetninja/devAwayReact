@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    marginTop: 130
   },
   wrapperLogoBrand: {
     flexDirection: "row" //Pour que le logo et la brand soit sur la meme ligne

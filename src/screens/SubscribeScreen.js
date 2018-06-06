@@ -9,9 +9,6 @@ import {
   TouchableHighlight
 } from 'react-native';
 import t from 'tcomb-form-native';
-import { StackActions, NavigationActions } from 'react-navigation';
-
-import Util from './../utils/util';
 
 const Form = t.form.Form;
 
@@ -19,27 +16,25 @@ export default class LoginScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'USERPROFILE' })],
-        });
-
-        const token = Util.getToken().then((token) => {
-            if(token.status == ok){
-                this.props.navigation.dispatch(this.resetAction);
-            }
-        }, (error) => {
-            console.log(error) //Display error
-        });;
 
         this.User = t.struct({
             email: t.String,
+            username: t.String,
             password: t.String,
+            c_password: t.String,
+            terms: t.Boolean
         });
         
         this.options = {
             fields: {
                 email: {
+                    hasError: false,
+                    error: ""
+                },
+                c_password: {
+                    label: 'Confirm your password',
+                    password: true,
+                    secureTextEntry: true,
                     hasError: false,
                     error: ""
                 },
@@ -49,6 +44,13 @@ export default class LoginScreen extends React.Component {
                     hasError: false,
                     error: ""
                 },
+                username: {
+                    hasError: false,
+                    error: ""
+                },
+                terms: {
+                    label: 'Agree to terms',
+                },
             },  
         };
     
@@ -56,16 +58,12 @@ export default class LoginScreen extends React.Component {
             options: this.options,
             value: null
         };
-
-        this.navigationOptions = {
-            title: 'LoginScreen',
-        }
     }
 
     handleSubmit = () => {
         const value = this._form.getValue(); // use that ref to get the form value
-        if(value) {
-            fetch('https://limitless-springs-83583.herokuapp.com/api/login', {
+        if (value) {
+            fetch('https://limitless-springs-83583.herokuapp.com/api/register', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -80,21 +78,39 @@ export default class LoginScreen extends React.Component {
                 return response.json()  //we only get here if there is no error
             })
             .then( json => {
-                Util.setToken(json.success.token);                
-                this.props.navigation.dispatch(this.resetAction);
+                alert("success : "+json);
+                console.log(json);
+                this.props.dispatch(doSomethingWithResult(json))
             })
             .catch( err => {
                 err.json().then( errorMessage => {
+                    //{"error":{"email":["The email has already been taken."],"c_password":["The c password and password must match."]}}
                     console.log(errorMessage);
+                    let emailHasError = false;
+                    if(errorMessage.error.hasOwnProperty("email")){
+                        emailHasError = true;
+                    }
+                    let cPasswordHasError = false;
+                    if(errorMessage.error.hasOwnProperty("c_password")){
+                        cPasswordHasError = true;
+                    }
+                    const options = t.update(this.state.options, {
+                        fields: {
+                            email: {
+                                hasError: {'$set': emailHasError},
+                                error: {'$set': errorMessage.error.email[0]}
+                            },
+                            c_password: {
+                                hasError: {'$set': cPasswordHasError},
+                                error: {'$set': errorMessage.error.c_password[0]}
+                            }
+                        }
+                    });
+                    console.log(options);
+                    this.setState({options, value});
                 });
             })
         }
-    }
-
-    signUpTrigger = () => {
-        //@todo redirect
-        const {navigate} = this.props.navigation;
-        navigate('SUBSCRIBE');
     }
 
     render() {
@@ -107,10 +123,8 @@ export default class LoginScreen extends React.Component {
                     value={this.state.value}
                 />
                 <TouchableHighlight style={styles.button} onPress={this.handleSubmit} underlayColor='#99d9f4'>
-                    <Text style={styles.buttonText}>Login!</Text>
+                    <Text style={styles.buttonText}>Sign Up!</Text>
                 </TouchableHighlight>
-
-                <Text onPress={this.signUpTrigger}>Or sign up!</Text>
             </ScrollView>
         );
     }
