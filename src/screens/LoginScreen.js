@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import t from 'tcomb-form-native';
 import { StackActions, NavigationActions } from 'react-navigation';
+import { API_URL } from 'react-native-dotenv';
 
 import Util from './../utils/util';
 
@@ -65,7 +66,7 @@ export default class LoginScreen extends React.Component {
     handleSubmit = () => {
         const value = this._form.getValue(); // use that ref to get the form value
         if(value) {
-            fetch('https://limitless-springs-83583.herokuapp.com/api/login', {
+            fetch(API_URL+'/api/login', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -109,7 +110,7 @@ export default class LoginScreen extends React.Component {
                 <TouchableHighlight style={styles.button} onPress={this.handleSubmit} underlayColor='#99d9f4'>
                     <Text style={styles.buttonText}>Login!</Text>
                 </TouchableHighlight>
-
+                
                 <Text onPress={this.signUpTrigger}>Or sign up!</Text>
             </ScrollView>
         );

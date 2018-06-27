@@ -10,6 +10,12 @@ import {
 } from 'react-native';
 
 export default class HomeScreen extends React.Component { 
+
+  accommodationsListTrigger = () => {
+    const {navigate} = this.props.navigation;
+    navigate('ACCOMMODATIONSLIST');
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -34,7 +40,7 @@ export default class HomeScreen extends React.Component {
             <Text style={styles.headerTextOne}>
               Use our skills to share a human
             </Text>
-            <Text style={styles.headerTextTwo}>experience, it's a win-win</Text>
+            <Text style={styles.headerTextTwo} onPress={this.accommodationsListTrigger}>experience, it's a win-win</Text>
           </View>
         </ImageBackground>
       </View>
