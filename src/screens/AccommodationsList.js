@@ -13,6 +13,7 @@ import { API_URL } from 'react-native-dotenv';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Util from './../utils/util';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ImageCarousel from 'react-native-image-page';
 
 export default class AccommodationsScreen extends React.Component {
 
@@ -70,11 +71,18 @@ export default class AccommodationsScreen extends React.Component {
     }
 
     renderGridItem(accommodation) {
-        let uriPicture = "https://cdn.pixabay.com/photo/2014/04/02/11/15/house-305683_960_720.png";
+        let pictures = [];
         if (accommodation.pictures && accommodation.pictures.length > 0) {
-            uriPicture = accommodation.pictures[0].url;
+            if (accommodation.pictures.length > 1) {
+                for (i = 0; i < accommodation.pictures.length; i++) {
+                    pictures.push({uri: accommodation.pictures[i].url});
+                }
+            } else {
+                pictures.push({uri : accommodation.pictures[0].url});
+            }
+        }else{
+            pictures.push({uri: "https://cdn.pixabay.com/photo/2014/04/02/11/15/house-305683_960_720.png"});
         }
-        console.log(accommodation.pictures.length);
         let textBedroom = "1 LIT";
         if (accommodation.nbBedroom > 1) {
             textBedroom = accommodation.nbBedroom + " LITS";
@@ -82,7 +90,15 @@ export default class AccommodationsScreen extends React.Component {
         return (
             <TouchableOpacity style={styles.gridItem}>
                 <View>
-                    <Image style={styles.gridItemImage} source={{ uri: uriPicture }} />
+                    <ImageCarousel
+                        height={200}
+                        animate={false}
+                        width={300}
+                        indicatorSize={15}
+                        indicatorText="✽"
+                        indicatorColor="red"
+                        images={pictures}
+                    />
                     <View style={styles.containerTextStyle}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={styles.textBedroomStyle}>{textBedroom}</Text>
@@ -119,20 +135,6 @@ export default class AccommodationsScreen extends React.Component {
                         dataSource={listItems}
                         renderRow={(item) => this.renderGridItem(item)}
                     />
-                    {/*
-                        this.state.accommodations.map(function (accommodation) {
-                            let uriPicture = "https://cdn.pixabay.com/photo/2014/04/02/11/15/house-305683_960_720.png";
-                            if (accommodation.pictures && accommodation.pictures.length > 0) {
-                                uriPicture = accommodation.pictures[0].url;
-                            }
-                            return (
-                                <View style={styles.containerOneAccommodation}>
-                                    <Text>ALLAHU</Text>
-                                    <Image style={styles.headerAccommodation} source={{ uri: uriPicture }} />
-                                </View>
-                            )
-                        })
-                    */}
                 </ScrollView>
             );
         } else {
@@ -155,10 +157,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         padding: 10
     },
-    headerAccommodation: {
-        height: '33%',
-        width: '80%'
-    },
     containerAccommodations: {
         flex: 1,
         marginTop: 50,
@@ -171,21 +169,10 @@ const styles = StyleSheet.create({
     },
     gridItem: {
         margin: 5,
-        width: 320,
+        width: 300,
         height: 300,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    gridItemImage: {
-        width: 320,
-        height: 200,
-        borderRadius: 4,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    gridItemText: {
-        marginTop: 5,
-        textAlign: 'center',
     },
     textBedroomStyle: {
         fontSize: 10
