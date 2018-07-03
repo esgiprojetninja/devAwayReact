@@ -16,6 +16,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import MessageScreen from './src/screens/MessageScreen';
 import SubscribeScreen from './src/screens/SubscribeScreen';
 import AccommodationsList from './src/screens/AccommodationsList';
+import Accommodation from './src/screens/Accommodation';
 
 import LoginScreen from './src/screens/LoginScreen';
 
@@ -29,13 +30,8 @@ const exploreProfile  = createStackNavigator({
   HOME: HomeScreen,
   ACCOMMODATIONSLIST: AccommodationsList,
   PROFILE: navigatorProfile,
-},{
-  headerMode: 'none',
-  navigationOptions: {
-    headerVisible: false,
-  }
- }
-);
+  ACCOMMODATION: Accommodation
+});
 
 export default createBottomTabNavigator({
     EXPLORE: exploreProfile,

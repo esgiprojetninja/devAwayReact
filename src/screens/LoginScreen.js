@@ -17,7 +17,19 @@ import Util from './../utils/util';
 const Form = t.form.Form;
 
 export default class LoginScreen extends React.Component {
-
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerStyle: {
+                backgroundColor: 'transparent',
+                right: 0,
+                left: 0,
+                top: 0,
+                position: 'absolute',
+                borderBottomWidth: 0,
+            },
+            headerTintColor: 'white'
+        };
+    }
     constructor(props) {
         super(props);
         this.resetAction = StackActions.reset({

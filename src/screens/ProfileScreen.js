@@ -14,6 +14,19 @@ import { API_URL } from 'react-native-dotenv';
 import Util from './../utils/util';
 
 export default class ProfileScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerStyle: {
+        backgroundColor: 'transparent',
+        right: 0,
+        left: 0,
+        top: 0,
+        position: 'absolute',
+        borderBottomWidth: 0,
+      },
+      headerTintColor: 'white'
+    };
+  }
   constructor(props) {
 
     super(props);
@@ -114,7 +127,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 30
   },
   horizontal: {
     flexDirection: 'row',

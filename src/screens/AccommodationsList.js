@@ -32,10 +32,9 @@ export default class AccommodationsScreen extends React.Component {
         });
 
         const token = Util.getToken().then(tok => {
-            if (tok.status == "error" || tok.token == null) {
-                this.props.navigation.dispatch(this.resetAction);
+            if (tok.status != "error" || tok.token != null) {
+                this.state.tokenValue = tok.token;
             }
-            this.state.tokenValue = tok.token;
         }, (error) => {
             console.log(error) //Display error
         }).done((data) => {
@@ -43,8 +42,7 @@ export default class AccommodationsScreen extends React.Component {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + this.state.tokenValue,
+                    'Content-Type': 'application/json'
                 }
             })
                 .then(response => {
@@ -54,6 +52,7 @@ export default class AccommodationsScreen extends React.Component {
                     return response.json();
                 })
                 .then(json => {
+                    console.log("GOOD");
                     this.state.accommodations = json;
                     this.isLoaded();
                 })
@@ -70,28 +69,35 @@ export default class AccommodationsScreen extends React.Component {
         this.setState({ loaded: true })
     }
 
+    _onPress = (id_accommodation) => {
+        this.props.navigation.navigate(
+            'ACCOMMODATION',
+            { id_accommodation },
+        );
+    }
+
     renderGridItem(accommodation) {
         let pictures = [];
         if (accommodation.pictures && accommodation.pictures.length > 0) {
             if (accommodation.pictures.length > 1) {
                 for (i = 0; i < accommodation.pictures.length; i++) {
-                    pictures.push({uri: accommodation.pictures[i].url});
+                    pictures.push({ uri: accommodation.pictures[i].url });
                 }
             } else {
-                pictures.push({uri : accommodation.pictures[0].url});
+                pictures.push({ uri: accommodation.pictures[0].url });
             }
-        }else{
-            pictures.push({uri: "https://cdn.pixabay.com/photo/2014/04/02/11/15/house-305683_960_720.png"});
+        } else {
+            pictures.push({ uri: "http://localhost:3000/img/accommodation.jpg" });
         }
         let textBedroom = "1 LIT";
         if (accommodation.nbBedroom > 1) {
             textBedroom = accommodation.nbBedroom + " LITS";
         }
         return (
-            <TouchableOpacity style={styles.gridItem}>
+            <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(accommodation.id)}>
                 <View>
                     <ImageCarousel
-                        height={200}
+                        height={220}
                         animate={false}
                         width={300}
                         indicatorSize={15}
@@ -158,8 +164,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     containerAccommodations: {
-        flex: 1,
-        marginTop: 50,
+        flex: 1
     },
     grid: {
         justifyContent: 'center',
@@ -186,5 +191,8 @@ const styles = StyleSheet.create({
     },
     containerTextStyle: {
         marginTop: 6
-    }
+    },
+    navBar: {
+        backgroundColor: 'transparent',
+    },
 });
