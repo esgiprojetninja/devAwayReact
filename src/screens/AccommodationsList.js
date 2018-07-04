@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ImageCarousel from 'react-native-image-page';
 
 export default class AccommodationsScreen extends React.Component {
-
     constructor(props) {
 
         super(props);
@@ -81,10 +80,10 @@ export default class AccommodationsScreen extends React.Component {
         if (accommodation.pictures && accommodation.pictures.length > 0) {
             if (accommodation.pictures.length > 1) {
                 for (i = 0; i < accommodation.pictures.length; i++) {
-                    pictures.push({ uri: accommodation.pictures[i].url });
+                    pictures.push({ uri: "data:image/png;base64," + accommodation.pictures[i].url });
                 }
             } else {
-                pictures.push({ uri: accommodation.pictures[0].url });
+                pictures.push({ uri: "data:image/png;base64," + accommodation.pictures[0].url });
             }
         } else {
             pictures.push({ uri: "http://localhost:3000/img/accommodation.jpg" });

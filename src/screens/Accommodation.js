@@ -13,10 +13,9 @@ import {
 } from 'react-native';
 import { API_URL } from 'react-native-dotenv';
 import { StackActions, NavigationActions } from 'react-navigation';
+
 import Util from './../utils/util';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MapView from 'react-native-maps';
-
 StatusBar.setBarStyle('light-content', true);
 
 export default class AccommodationScreen extends React.Component {
@@ -89,6 +88,10 @@ export default class AccommodationScreen extends React.Component {
         this.setState({ loaded: true })
     }
 
+    onRegionChange(region) {
+        this.setState({ region });
+    }
+
     render() {
         const HEADER_MAX_HEIGHT = 280;
         const HEADER_MIN_HEIGHT = 100;
@@ -114,10 +117,10 @@ export default class AccommodationScreen extends React.Component {
             if (this.state.accommodation.pictures && this.state.accommodation.pictures.length > 0) {
                 if (this.state.accommodation.pictures.length > 1) {
                     for (i = 0; i < this.state.accommodation.pictures.length; i++) {
-                        pictures.push({ uri: this.state.accommodation.pictures[i].url });
+                        pictures.push({ uri: "data:image/png;base64,"+this.state.accommodation.pictures[i].url });
                     }
                 } else {
-                    pictures.push({ uri: this.state.accommodation.pictures[0].url });
+                    pictures.push({ uri: "data:image/png;base64,"+this.state.accommodation.pictures[0].url });
                 }
             } else {
                 pictures.push({ uri: "http://localhost:3000/img/accommodation.jpg" });
@@ -127,12 +130,12 @@ export default class AccommodationScreen extends React.Component {
                 longitude: this.state.accommodation.longitude,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
-              },
-            console.log(this.state.region);
+            },
+                console.log(this.state.region);
             /*UtilBrigthness.getImageLightness(pictures[0].uri,function(brightness){
                 console.log(brightness);
             });*/
-            
+
             return (
                 <View style={{ flex: 1, backgroundColor: 'white' }}>
                     <ScrollView style={{ flex: 1 }}
@@ -144,7 +147,7 @@ export default class AccommodationScreen extends React.Component {
                             <Text style={styles.headerTypeAccommodation}>{"Logement entier".toUpperCase()}</Text>
                             <Text style={styles.headerTitle}>{this.state.accommodation.title}</Text>
                             <View style={styles.containerHost}>
-                                <View>
+                                <View style={{width: '100%'}}>
                                     <Text style={styles.headerLocation}>{this.state.accommodation.country}, {this.state.accommodation.city}</Text>
                                     <Text style={styles.headerHost}>Host: {this.state.accommodation.host.firstName}</Text>
                                 </View>
@@ -170,9 +173,7 @@ export default class AccommodationScreen extends React.Component {
                                     <Icon name="wifi" size={16} color="red" />
                                 </View>
                             </View>
-                            <MapView
-                                region={this.state.region}
-                            />
+
                         </View>
                     </ScrollView>
                     <Animated.View style={[styles.header, { height: headerHeight }]}>
@@ -255,11 +256,14 @@ const styles = StyleSheet.create({
     headerLocation: {
         fontSize: 15,
         marginTop: 30,
-        color: "#808080"
+        color: "#808080",
+        marginRight: 30,
+        width: '70%'
     },
     headerHost: {
         fontSize: 15,
-        color: "#808080"
+        color: "#808080",
+        widrh: '30%'
     },
     headerAvatar: {
         width: 50,
