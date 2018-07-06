@@ -12,11 +12,15 @@ import {
     StatusBar,
 } from 'react-native';
 import { API_URL } from 'react-native-dotenv';
+
 import { StackActions, NavigationActions } from 'react-navigation';
+import MapboxGL from '@mapbox/react-native-mapbox-gl';
 
 import Util from './../utils/util';
 import Icon from 'react-native-vector-icons/FontAwesome';
 StatusBar.setBarStyle('light-content', true);
+
+MapboxGL.setAccessToken("pk.eyJ1IjoiZ29yZnkiLCJhIjoiY2pqNWRrcGV2MDA1MDNyb2l1eDA1ZHAxbSJ9.0maq06v2c4oK8l6p_u8RjQ");
 
 export default class AccommodationScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
@@ -33,6 +37,7 @@ export default class AccommodationScreen extends React.Component {
         };
     }
     constructor(props) {
+        console.log("LOADING ONE ACCOMMODATION");
 
         super(props);
 
@@ -117,10 +122,10 @@ export default class AccommodationScreen extends React.Component {
             if (this.state.accommodation.pictures && this.state.accommodation.pictures.length > 0) {
                 if (this.state.accommodation.pictures.length > 1) {
                     for (i = 0; i < this.state.accommodation.pictures.length; i++) {
-                        pictures.push({ uri: "data:image/png;base64,"+this.state.accommodation.pictures[i].url });
+                        pictures.push({ uri: "data:image/png;base64," + this.state.accommodation.pictures[i].url });
                     }
                 } else {
-                    pictures.push({ uri: "data:image/png;base64,"+this.state.accommodation.pictures[0].url });
+                    pictures.push({ uri: "data:image/png;base64," + this.state.accommodation.pictures[0].url });
                 }
             } else {
                 pictures.push({ uri: "http://localhost:3000/img/accommodation.jpg" });
@@ -147,7 +152,7 @@ export default class AccommodationScreen extends React.Component {
                             <Text style={styles.headerTypeAccommodation}>{"Logement entier".toUpperCase()}</Text>
                             <Text style={styles.headerTitle}>{this.state.accommodation.title}</Text>
                             <View style={styles.containerHost}>
-                                <View style={{width: '100%'}}>
+                                <View style={{ width: '100%' }}>
                                     <Text style={styles.headerLocation}>{this.state.accommodation.country}, {this.state.accommodation.city}</Text>
                                     <Text style={styles.headerHost}>Host: {this.state.accommodation.host.firstName}</Text>
                                 </View>
@@ -173,7 +178,12 @@ export default class AccommodationScreen extends React.Component {
                                     <Icon name="wifi" size={16} color="red" />
                                 </View>
                             </View>
-
+                            <MapboxGL.MapView
+                                styleURL={Mapbox.StyleURL.Street}
+                                zoomLevel={15}
+                                centerCoordinate={[11.256, 43.770]}
+                                style={styles.container}
+                            />
                         </View>
                     </ScrollView>
                     <Animated.View style={[styles.header, { height: headerHeight }]}>
@@ -250,7 +260,6 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 30,
         fontWeight: 'bold',
-        fontFamily: "roboto",
         paddingRight: 90
     },
     headerLocation: {
@@ -263,12 +272,11 @@ const styles = StyleSheet.create({
     headerHost: {
         fontSize: 15,
         color: "#808080",
-        widrh: '30%'
+        width: '30%'
     },
     headerAvatar: {
         width: 50,
         height: 50,
-        backgroundSize: 'cover',
         borderRadius: 25,
         marginLeft: 'auto',
         marginRight: 40,

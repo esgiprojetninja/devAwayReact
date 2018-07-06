@@ -17,6 +17,7 @@ import ImageCarousel from 'react-native-image-page';
 
 export default class AccommodationsScreen extends React.Component {
     constructor(props) {
+        console.log("LOADING ALL ACCOMMODATIONS");
 
         super(props);
 
@@ -35,8 +36,10 @@ export default class AccommodationsScreen extends React.Component {
                 this.state.tokenValue = tok.token;
             }
         }, (error) => {
-            console.log(error) //Display error
+            console.log("Error token:" + error) //Display error
         }).done((data) => {
+            console.log("Fetching all accommodations");
+            console.log(API_URL);
             fetch(API_URL + '/api/v1/accommodations', {
                 method: 'GET',
                 headers: {
@@ -45,6 +48,7 @@ export default class AccommodationsScreen extends React.Component {
                 }
             })
                 .then(response => {
+                    console.log("Get response");
                     if (!response.ok) {
                         throw response;
                     }
@@ -56,8 +60,8 @@ export default class AccommodationsScreen extends React.Component {
                     this.isLoaded();
                 })
                 .catch(err => {
+                    console.log("RIP");
                     err.json().then(errorMessage => {
-                        console.log("RIP");
                         console.log(errorMessage);
                     });
                 })
