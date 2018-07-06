@@ -7,7 +7,8 @@ import {
     ScrollView,
     ActivityIndicator,
     ListView,
-    TouchableOpacity
+    TouchableOpacity,
+    StatusBar
 } from 'react-native';
 import { API_URL } from 'react-native-dotenv';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -136,6 +137,10 @@ export default class AccommodationsScreen extends React.Component {
             var listItems = dataSource.cloneWithRows(this.state.accommodations);
             return (
                 <ScrollView style={styles.containerAccommodations}>
+                    <StatusBar
+                        barStyle="dark-content"
+                        backgroundColor="red"
+                    />
 
                     <Text>Affichage de 125 accommodations</Text>
 

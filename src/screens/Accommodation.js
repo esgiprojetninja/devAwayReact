@@ -14,10 +14,6 @@ import {
 import { API_URL } from 'react-native-dotenv';
 import { Font } from 'expo';
 import { StackActions, NavigationActions } from 'react-navigation';
-/*import MapboxGL from '@mapbox/react-native-mapbox-gl';
-MapboxGL.setAccessToken("pk.eyJ1IjoiZ29yZnkiLCJhIjoiY2pqNWRrcGV2MDA1MDNyb2l1eDA1ZHAxbSJ9.0maqimport { WSAETIMEDOUT } from 'constants';
-06v2c4oK8l6p_u8RjQ");
-*/
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
@@ -34,6 +30,8 @@ export default class AccommodationScreen extends React.Component {
             border: 0
         }, headerTitleStyle: {
             color: 'black'
+        }, headerStyle: {
+            borderBottomWidth: 0,
         }
     };
     constructor(props) {
@@ -168,7 +166,7 @@ export default class AccommodationScreen extends React.Component {
                             <View style={{ flex: 1, marginTop: 20, marginRight: 30 }}>
                                 <View style={styles.headerIconItems}>
                                     <Text style={styles.headerIconOneItem}><Icon name="user" size={16} color="black" /> {this.state.accommodation.nbMaxAdult} travellers</Text>
-                                    <Text style={styles.headerIconOneItem}><Icon name="door" size={16} color="black" /> {this.state.accommodation.nbBedroom + this.state.accommodation.nbBathroom} rooms</Text>
+                                    <Text style={styles.headerIconOneItem}><Icon name="user" size={16} color="black" /> {this.state.accommodation.nbBedroom + this.state.accommodation.nbBathroom} rooms</Text>
                                 </View>
                                 <View style={styles.headerIconItems}>
                                     <Text style={styles.headerIconOneItem}><Icon name="bed" size={16} color="black" /> {this.state.accommodation.nbBedroom} beds</Text>

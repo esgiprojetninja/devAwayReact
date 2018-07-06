@@ -34,6 +34,8 @@ target 'dev_away_app' do
   pod 'react-native-google-maps', path: rn_maps_path  # Remove this line if you don't want to support GoogleMaps on iOS
   pod 'GoogleMaps'  # Remove this line if you don't want to support GoogleMaps on iOS
   pod 'Google-Maps-iOS-Utils' # Remove this line if you don't want to support GoogleMaps on iOS
+  pod 'ReactNativeSearchBar', :path => '../node_modules/react-native-search-bar'
+
 end
 
 post_install do |installer|

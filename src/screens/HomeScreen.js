@@ -5,25 +5,36 @@ import {
   View,
   ImageBackground,
   Image,
-  ScrollView,
+  StatusBar,
   Button
 } from 'react-native';
 
 export default class HomeScreen extends React.Component {
-
+  static navigationOptions = {
+    headerTransparent: {
+      backgroundColor: 'transparent',
+    },
+    headerStyle: {
+      borderBottomWidth: 0,
+    }
+  };
   accommodationsListTrigger = () => {
     const { navigate } = this.props.navigation;
     navigate('ACCOMMODATIONSLIST');
   }
 
   render() {
-    console.log("fghghjhjhjbjhkjkhjkh");
+    console.log("Load home");
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar
+          barStyle="light-content"
+        />
         <ImageBackground
           style={styles.background}
           source={require("../../public/img/home-background.png")}
         >
+          
           <View style={styles.wrapper}>
             <View style={styles.wrapperLogoBrand}>
               <Image
