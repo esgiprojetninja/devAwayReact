@@ -12,7 +12,7 @@ import {
     StatusBar,
 } from 'react-native';
 import { API_URL } from 'react-native-dotenv';
-
+import { Font } from 'expo';
 import { StackActions, NavigationActions } from 'react-navigation';
 import MapboxGL from '@mapbox/react-native-mapbox-gl';
 
@@ -86,6 +86,12 @@ export default class AccommodationScreen extends React.Component {
                         console.log(errorMessage);
                     });
                 })
+        });
+    }
+
+    componentDidMount() {
+        Font.loadAsync({
+            'roboto': require('./../../public/fonts/Roboto-Regular.ttf'),
         });
     }
 
@@ -183,132 +189,133 @@ export default class AccommodationScreen extends React.Component {
                                 zoomLevel={15}
                                 centerCoordinate={[11.256, 43.770]}
                                 style={styles.container}
-                            />
+                                />
                         </View>
                     </ScrollView>
-                    <Animated.View style={[styles.header, { height: headerHeight }]}>
-                        <Animated.Image
-                            style={[
-                                styles.backgroundImage,
-                                { opacity: imageOpacity, transform: [{ translateY: imageTranslate }] },
-                            ]}
-                            source={pictures[0]}
-                        />
-                    </Animated.View>
+                        <Animated.View style={[styles.header, { height: headerHeight }]}>
+                            <Animated.Image
+                                style={[
+                                    styles.backgroundImage,
+                                    { opacity: imageOpacity, transform: [{ translateY: imageTranslate }] },
+                                ]}
+                                source={pictures[0]}
+                            />
+                        </Animated.View>
                 </View >
 
-            );
+                    );
         } else {
             return (
                 <View style={[styles.container, styles.horizontal]}>
-                    <ActivityIndicator size="large" color="#0000ff" />
-                </View>
-            );
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    </View>
+                    );
+                }
+            }
         }
-    }
-}
-
+        
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center'
-    },
+                        container: {
+                        flex: 1,
+                    justifyContent: 'center'
+                },
     horizontal: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        padding: 10
-    },
+                        flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    padding: 10
+                },
     containerAccommodations: {
-        flex: 1
-    },
+                        flex: 1
+                },
     imageHeader: {
-        width: '100%',
-        height: 280,
-        top: 0,
-        left: 0,
-        position: 'absolute'
-    },
+                        width: '100%',
+                    height: 280,
+                    top: 0,
+                    left: 0,
+                    position: 'absolute'
+                },
     header: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: '#ffffff',
-        overflow: 'hidden',
-    },
+                        position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: '#ffffff',
+                    overflow: 'hidden',
+                },
     scrollViewContent: {
-        marginTop: 200,
-    },
+                        marginTop: 200,
+                },
     headerTypeAccommodation: {
-        fontSize: 14,
-        marginBottom: 10,
-        color: "#808080"
-    },
+                        fontSize: 14,
+                    marginBottom: 10,
+                    color: "#808080"
+                },
     backgroundImage: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        width: null,
-        height: 280,
-        resizeMode: 'cover',
-    },
+                        position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    width: null,
+                    height: 280,
+                    resizeMode: 'cover',
+                },
     containerInformations: {
-        marginTop: 300,
-        marginLeft: 30,
-    },
+                        marginTop: 300,
+                    marginLeft: 30,
+                },
     headerTitle: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        paddingRight: 90
-    },
+                        fontSize: 30,
+                    fontWeight: 'bold',
+                    fontFamily: 'roboto',
+                    paddingRight: 90
+                },
     headerLocation: {
-        fontSize: 15,
-        marginTop: 30,
-        color: "#808080",
-        marginRight: 30,
-        width: '70%'
-    },
+                        fontSize: 15,
+                    marginTop: 30,
+                    color: "#808080",
+                    marginRight: 30,
+                    width: '70%'
+                },
     headerHost: {
-        fontSize: 15,
-        color: "#808080",
-        width: '30%'
-    },
+                        fontSize: 15,
+                    color: "#808080",
+                    width: '30%'
+                },
     headerAvatar: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        marginLeft: 'auto',
-        marginRight: 40,
-        marginTop: 15,
-        borderWidth: 0.5,
-        borderColor: 'black',
-    },
+                        width: 50,
+                    height: 50,
+                    borderRadius: 25,
+                    marginLeft: 'auto',
+                    marginRight: 40,
+                    marginTop: 15,
+                    borderWidth: 0.5,
+                    borderColor: 'black',
+                },
     containerHost: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end'
-    },
+                        flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end'
+                },
     headerIconItems: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        marginTop: 10
-    },
+                        flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    marginTop: 10
+                },
     headerIconOneItem: {
-        width: '50%',
-        color: "#808080"
-    },
+                        width: '50%',
+                    color: "#808080"
+                },
     headerDescription: {
-        fontSize: 16,
-        marginTop: 20,
-        marginRight: 30
-    },
+                        fontSize: 16,
+                    marginTop: 20,
+                    marginRight: 30
+                },
     separatorFullWidthGrey: {
-        borderBottomColor: '#808080',
-        borderBottomWidth: 0.5,
-        marginRight: 30,
-        marginTop: 20,
-    }
-});
+                        borderBottomColor: '#808080',
+                    borderBottomWidth: 0.5,
+                    marginRight: 30,
+                    marginTop: 20,
+                }
+            });
