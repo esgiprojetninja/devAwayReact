@@ -13,16 +13,17 @@ import { createBottomTabNavigator, createStackNavigator, NavigationActions } fro
 
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import MessageScreen from './src/screens/MessageScreen';
+import MessagesList from './src/screens/MessagesList';
 import SubscribeScreen from './src/screens/SubscribeScreen';
 import AccommodationsList from './src/screens/AccommodationsList';
 import Accommodation from './src/screens/Accommodation';
+import Discution from './src/screens/Discution';
 
 import LoginScreen from './src/screens/LoginScreen';
 
 const navigatorProfile = createStackNavigator({
   USERPROFILE: ProfileScreen,
-  LOGIN: {screen: LoginScreen, headerMode: 'none'},
+  LOGIN: LoginScreen,
   SUBSCRIBE: SubscribeScreen,
 });
 
@@ -30,12 +31,13 @@ const exploreProfile  = createStackNavigator({
   HOME: HomeScreen,
   ACCOMMODATIONSLIST: AccommodationsList,
   PROFILE: navigatorProfile,
-  ACCOMMODATION: Accommodation
+  ACCOMMODATION: Accommodation,
+  DISCUTION: Discution
 });
 
 export default createBottomTabNavigator({
     EXPLORE: exploreProfile,
-    MESSAGE: MessageScreen,
+    MESSAGE: MessagesList,
     PROFILE: navigatorProfile
   },
   {

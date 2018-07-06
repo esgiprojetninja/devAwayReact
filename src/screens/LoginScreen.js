@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  ScrollView,
-  Button,
-  TouchableHighlight
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    ScrollView,
+    Button,
+    TouchableHighlight
 } from 'react-native';
 import t from 'tcomb-form-native';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -17,19 +17,6 @@ import Util from './../utils/util';
 const Form = t.form.Form;
 
 export default class LoginScreen extends React.Component {
-    static navigationOptions = ({ navigation }) => {
-        return {
-            headerStyle: {
-                backgroundColor: 'transparent',
-                right: 0,
-                left: 0,
-                top: 0,
-                position: 'absolute',
-                borderBottomWidth: 0,
-            },
-            headerTintColor: 'white'
-        };
-    }
     constructor(props) {
         super(props);
         this.resetAction = StackActions.reset({
@@ -37,8 +24,11 @@ export default class LoginScreen extends React.Component {
             actions: [NavigationActions.navigate({ routeName: 'USERPROFILE' })],
         });
 
+        console.log("Solide");
+
         const token = Util.getToken().then((token) => {
-            if(token.status == ok){
+            console.log("FStatus: " +token.status);
+            if (token.status == "ok") {
                 this.props.navigation.dispatch(this.resetAction);
             }
         }, (error) => {
@@ -49,7 +39,7 @@ export default class LoginScreen extends React.Component {
             email: t.String,
             password: t.String,
         });
-        
+
         this.options = {
             fields: {
                 email: {
@@ -62,10 +52,10 @@ export default class LoginScreen extends React.Component {
                     hasError: false,
                     error: ""
                 },
-            },  
+            },
         };
-    
-        this.state = { 
+
+        this.state = {
             options: this.options,
             value: null
         };
@@ -77,8 +67,8 @@ export default class LoginScreen extends React.Component {
 
     handleSubmit = () => {
         const value = this._form.getValue(); // use that ref to get the form value
-        if(value) {
-            fetch(API_URL+'/api/login', {
+        if (value) {
+            fetch(API_URL + '/api/login', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -86,54 +76,53 @@ export default class LoginScreen extends React.Component {
                 },
                 body: JSON.stringify(value),
             })
-            .then( response => {
-                if (!response.ok) { 
-                    throw response;
-                }
-                return response.json()  //we only get here if there is no error
-            })
-            .then( json => {
-                Util.setToken(json.success.token);                
-                this.props.navigation.dispatch(this.resetAction);
-            })
-            .catch( err => {
-                err.json().then( errorMessage => {
-                    console.log(errorMessage);
-                });
-            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                    return response.json()  //we only get here if there is no error
+                })
+                .then(json => {
+                    Util.setToken(json.success.token);
+                    this.props.navigation.dispatch(this.resetAction);
+                })
+                .catch(err => {
+                    err.json().then(errorMessage => {
+                        console.log(errorMessage);
+                    });
+                })
         }
     }
 
     signUpTrigger = () => {
         //@todo redirect
-        const {navigate} = this.props.navigation;
+        const { navigate } = this.props.navigation;
         navigate('SUBSCRIBE');
     }
 
     render() {
         return (
-            <ScrollView style={styles.container}>
-                <Form 
+            <View style={styles.container}>
+                <Form
                     ref={c => this._form = c} // assign a ref
-                    type={this.User} 
+                    type={this.User}
                     options={this.state.options}
                     value={this.state.value}
                 />
                 <TouchableHighlight style={styles.button} onPress={this.handleSubmit} underlayColor='#99d9f4'>
                     <Text style={styles.buttonText}>Login!</Text>
                 </TouchableHighlight>
-                
+
                 <Text onPress={this.signUpTrigger}>Or sign up!</Text>
-            </ScrollView>
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: 'center',
         padding: 20,
-        backgroundColor: '#fff'
+        paddingTop: 100
     },
     buttonText: {
         fontSize: 18,

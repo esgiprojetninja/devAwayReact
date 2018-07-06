@@ -14,19 +14,6 @@ import { API_URL } from 'react-native-dotenv';
 import Util from './../utils/util';
 
 export default class ProfileScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerStyle: {
-        backgroundColor: 'transparent',
-        right: 0,
-        left: 0,
-        top: 0,
-        position: 'absolute',
-        borderBottomWidth: 0,
-      },
-      headerTintColor: 'white'
-    };
-  }
   constructor(props) {
 
     super(props);
@@ -39,42 +26,51 @@ export default class ProfileScreen extends React.Component {
     });
 
     const token = Util.getToken().then(tok => {
+      console.log(tok.status);
+      console.log(tok.token);
       if (tok.status == "error" || tok.token == null) {
-        this.props.navigation.dispatch(this.resetAction);
+        Util.removeToken().then((token) => {
+          console.log("Delete token");
+        }, (error) => {
+          console.log(error) //Display error
+        }).done((data) => {
+          console.log("Wanna redirect login");
+          //this.props.navigation.dispatch(this.resetAction);
+        });
       }
       this.tokenValue = tok.token;
     }, (error) => {
       console.log(error) //Display error
-    }).done((data) => {
-      fetch(API_URL + '/api/v1/users/me', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.tokenValue,
-        }
-      })
-        .then(response => {
-          if (!response.ok) {
-            console.log("ICI");
-            if (response.status >= 401) {
-              this.props.navigation.dispatch(this.resetAction);
-            }
-            throw response;
-          }
-          return response.json();
-        })
-        .then(json => {
-          this.user = json;
-          this.isLoaded();
-        })
-        .catch(err => {
-          err.json().then(errorMessage => {
-            console.log("RIP");
-            console.log(errorMessage);
-          });
-        })
     });
+
+    fetch(API_URL + '/api/v1/users/me', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.tokenValue,
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.log("ICI");
+          if (response.status >= 401) {
+            //this.props.navigation.dispatch(this.resetAction);
+          }
+          throw response;
+        }
+        return response.json();
+      })
+      .then(json => {
+        this.user = json;
+        this.isLoaded();
+      })
+      .catch(err => {
+        err.json().then(errorMessage => {
+          console.log("RIP");
+          console.log(errorMessage);
+        });
+      })
   }
 
   isLoaded() {
