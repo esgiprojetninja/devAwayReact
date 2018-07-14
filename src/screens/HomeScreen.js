@@ -6,8 +6,10 @@ import {
   ImageBackground,
   Image,
   StatusBar,
-  Button
+  Button,
+  TextInput
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -34,7 +36,15 @@ export default class HomeScreen extends React.Component {
           style={styles.background}
           source={require("../../public/img/home-background.png")}
         >
-          
+          <View style={styles.searchSection}>
+            <Ionicons style={styles.searchIcon} name="ios-search" size={20} color="#000" />
+            <TextInput
+              style={styles.input}
+              placeholder="User Nickname"
+              onChangeText={(searchString) => { console.log(searchString) }}
+              underlineColorAndroid="transparent"
+            />
+          </View>
           <View style={styles.wrapper}>
             <View style={styles.wrapperLogoBrand}>
               <Image
@@ -70,6 +80,26 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     marginTop: 130
+  },
+  searchSection: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    position: 'absolute',
+    top: 70,
+    left: 30,
+    right: 30,
+    height: 40,
+  },
+  searchIcon: {
+    padding: 10,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#fff',
+    color: '#424242',
   },
   wrapperLogoBrand: {
     flexDirection: "row" //Pour que le logo et la brand soit sur la meme ligne

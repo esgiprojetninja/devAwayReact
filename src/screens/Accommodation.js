@@ -95,10 +95,10 @@ export default class AccommodationScreen extends React.Component {
         this.setState({ loaded: true })
     }
 
-    _onPress = (id_host) => {
+    _onPress = (id_user) => {
         this.props.navigation.navigate(
             'DISCUTION',
-            { id_host },
+            { id_user },
         );
     }
 

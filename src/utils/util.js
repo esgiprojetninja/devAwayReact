@@ -4,11 +4,13 @@ import { StackActions, NavigationActions } from 'react-navigation';
 export default {
     setToken: async token => {
         try {
+            console.log("Success set Token");
             await AsyncStorage.setItem("@Storage:token", token);
             return {
                 status: "ok"
             };
         } catch (error) {
+            console.log("Error get token");
             return {
                 status: "error",
                 error
@@ -16,7 +18,6 @@ export default {
         }
     },
     removeToken: async () => {
-        console.log("Remove Token");
         try {
             console.log("Success remove Token");
             await AsyncStorage.removeItem("@Storage:token");
@@ -32,7 +33,6 @@ export default {
         }
     },
     getToken: async () => {
-        console.log("Get Token");
         try {
             console.log("Success token");
             const token = await AsyncStorage.getItem("@Storage:token");

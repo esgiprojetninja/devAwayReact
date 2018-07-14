@@ -7,7 +7,8 @@ import {
   ScrollView,
   ActivityIndicator,
   ListView,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import { API_URL } from 'react-native-dotenv';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -17,7 +18,8 @@ import ImageCarousel from 'react-native-image-page';
 
 export default class MessagesList extends React.Component {
   constructor(props) {
-    console.log("LOADING ALL MESSAGES");
+
+    console.log("-- MESSAGE --");
 
     super(props);
 
@@ -26,6 +28,7 @@ export default class MessagesList extends React.Component {
       messages: {},
       tokenValue: "",
     }
+
     this.resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'LOGIN' })],
@@ -38,17 +41,15 @@ export default class MessagesList extends React.Component {
     }, (error) => {
       console.log("Error token:" + error) //Display error
     }).done((data) => {
-      console.log("Fetching all messages");
-      console.log(API_URL);
       fetch(API_URL + '/api/v1/messages/me/latest', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.state.tokenValue,
         }
       })
         .then(response => {
-          console.log("Get response");
           if (!response.ok) {
             if (response.status >= 401) {
               this.props.navigation.dispatch(this.resetAction);
@@ -58,12 +59,11 @@ export default class MessagesList extends React.Component {
           return response.json();
         })
         .then(json => {
-          console.log("GOOD");
           this.state.messages = json;
           this.isLoaded();
+
         })
         .catch(err => {
-          console.log("RIP");
           err.json().then(errorMessage => {
             console.log(errorMessage);
           });
@@ -75,32 +75,58 @@ export default class MessagesList extends React.Component {
     this.setState({ loaded: true })
   }
 
-  _onPress = (id_accommodation) => {
+  _onPress = (id_user) => {
     this.props.navigation.navigate(
-      'ACCOMMODATION',
-      { id_accommodation },
+      'DISCUTION',
+      { id_user },
     );
   }
 
   renderGridItem(message) {
-    return (
-      <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(message.id)}>
-        <View>
-          <View style={styles.containerTextStyle}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.textBedroomStyle}>{textBedroom}</Text>
-              <Text style={styles.textBedroomStyle}> - {accommodation.nbMaxAdult} <Icon name="user" size={12} /></Text>
+    if (message.from.id == 1) {
+      let messageContent = message.content.substring(0, 30);
+      if (message.content.length > 30) {
+        messageContent = messageContent + " ...";
+      }
+      return (
+        <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(message.id)}>
+          <View style={styles.containerImageText}>
+            <View style={styles.containerImage}>
+              <Image style={styles.headerAvatar} source={{ uri: "data:image/png;base64," + message.to.avatar }} />
             </View>
-            <View>
-              <Text style={styles.textTitleStyle}>{accommodation.title}</Text>
-            </View>
-            <View>
-              <Text style={styles.textCityStyle}>{accommodation.city}</Text>
+            <View style={styles.containerText}>
+              <View style={styles.containerNameHour}>
+                <Text style={styles.textName}> {message.to.firstName} {message.to.lastName} </Text>
+                <Text style={styles.hour}> {(message.created_at).slice(-8, -3)} </Text>
+              </View>
+              <Text> Vous: {messageContent} </Text>
             </View>
           </View>
-        </View>
-      </TouchableOpacity >
-    );
+        </TouchableOpacity >
+      );
+    } else {
+      let messageContent = message.content.substring(0, 35);
+      if (message.content.length > 35) {
+        messageContent = messageContent + " ...";
+      }
+      return (
+        <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(message.id)}>
+          <View style={styles.containerImageText}>
+            <View style={styles.containerImage}>
+              <Image style={styles.headerAvatar} source={{ uri: "data:image/png;base64," + message.from.avatar }} />
+            </View>
+            <View style={styles.containerText}>
+              <View style={styles.containerNameHour}>
+                <Text style={styles.textName}> {message.from.firstName} {message.from.lastName} </Text>
+                <Text style={styles.hour}> {(message.created_at).slice(-8, -3)} </Text>
+              </View>
+              <Text> {messageContent} </Text>
+            </View>
+          </View>
+        </TouchableOpacity >
+      );
+    }
+
   }
 
   render() {
@@ -108,12 +134,12 @@ export default class MessagesList extends React.Component {
       var dataSource = new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2
       });
-      var listItems = dataSource.cloneWithRows(this.state.accommodations);
+      var listItems = dataSource.cloneWithRows(this.state.messages);
       return (
         <ScrollView style={styles.containerAccommodations}>
-
-          <Text>Affichage de 125 accommodations</Text>
-
+          <StatusBar
+            barStyle="dark-content"
+          />
           <ListView
             contentContainerStyle={styles.grid}
             dataSource={listItems}
@@ -145,32 +171,43 @@ const styles = StyleSheet.create({
     flex: 1
   },
   grid: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     flex: 1,
   },
   gridItem: {
-    margin: 5,
-    width: 300,
-    height: 300,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10
   },
-  textBedroomStyle: {
-    fontSize: 10
+  headerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  textTitleStyle: {
+  containerImageText: {
+    flex: 1,
+    flexDirection: 'row',
+    width: '100%',
+  },
+  hour: {
+    fontSize: 12
+  },
+  containerText: {
+    width: '82%',
+    marginRight: 20,
+    marginTop: 3,
+    marginLeft: 6
+  },
+  containerImage: {
+    width: '10%',
+    marginLeft: 6
+  },
+  containerNameHour: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  textName: {
+    fontSize: 14,
     fontWeight: 'bold',
-  },
-  textVerified: {
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  containerTextStyle: {
-    marginTop: 6
-  },
-  navBar: {
-    backgroundColor: 'transparent',
-  },
+  }
 });

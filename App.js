@@ -9,37 +9,41 @@ import {
   Button
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createBottomTabNavigator, createStackNavigator, NavigationActions } from 'react-navigation';
+import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import MessagesList from './src/screens/MessagesList';
 import SubscribeScreen from './src/screens/SubscribeScreen';
 import AccommodationsList from './src/screens/AccommodationsList';
-import Accommodation from './src/screens/Accommodation';
-import Discution from './src/screens/Discution';
-
+import AccommodationScreen from './src/screens/Accommodation';
+import DiscutionScreen from './src/screens/DiscutionScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import UserProfileScreen from './src/screens/UserProfileScreen';
+
+const navigatorExplore = createStackNavigator({
+  HOME: HomeScreen,
+  ACCOMMODATIONSLIST: AccommodationsList,
+  ACCOMMODATION: AccommodationScreen,
+});
 
 const navigatorProfile = createStackNavigator({
   USERPROFILE: ProfileScreen,
   LOGIN: LoginScreen,
   SUBSCRIBE: SubscribeScreen,
+  USERPROFILESCREEN: UserProfileScreen,
 });
 
-const exploreProfile  = createStackNavigator({
-  HOME: HomeScreen,
-  ACCOMMODATIONSLIST: AccommodationsList,
-  PROFILE: navigatorProfile,
-  ACCOMMODATION: Accommodation,
-  DISCUTION: Discution
+const navigatorMessage = createStackNavigator({
+  MESSAGELIST: MessagesList,
+  DISCUTION: DiscutionScreen,
 });
 
 export default createBottomTabNavigator({
-    EXPLORE: exploreProfile,
-    MESSAGE: MessagesList,
-    PROFILE: navigatorProfile
-  },
+  EXPLORE: navigatorExplore,
+  MESSAGE: navigatorMessage,
+  PROFILE: navigatorProfile
+},
   {
     navigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
@@ -56,11 +60,11 @@ export default createBottomTabNavigator({
         return <Ionicons name={iconName} size={25} color={tintColor} />;
       },
     }),
-    
+
     tabBarOptions: {
       style: {
-          backgroundColor: '#fff',
-          padding: 8,
+        backgroundColor: '#fff',
+        padding: 8,
       }
-  }
-});
+    }
+  });

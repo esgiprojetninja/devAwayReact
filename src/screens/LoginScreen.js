@@ -17,19 +17,26 @@ import Util from './../utils/util';
 const Form = t.form.Form;
 
 export default class LoginScreen extends React.Component {
+
     constructor(props) {
+
+        console.log("-- LOGIN --");
+
         super(props);
-        this.resetAction = StackActions.reset({
+
+        this.resetActionLogin = StackActions.reset({
             index: 0,
             actions: [NavigationActions.navigate({ routeName: 'USERPROFILE' })],
         });
-
-        console.log("Solide");
+        this.resetActionLogout = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'LOGIN' })],
+        });
 
         const token = Util.getToken().then((token) => {
-            console.log("FStatus: " +token.status);
-            if (token.status == "ok") {
-                this.props.navigation.dispatch(this.resetAction);
+            console.log(token);
+            if (token.status == "ok" && token.token != null) {
+                this.props.navigation.dispatch(this.resetActionLogin);
             }
         }, (error) => {
             console.log(error) //Display error
@@ -65,6 +72,11 @@ export default class LoginScreen extends React.Component {
         }
     }
 
+    userLogOut = async () => {
+        await Util.removeToken();
+        this.props.navigation.dispatch(this.resetActionLogout);
+    }
+
     handleSubmit = () => {
         const value = this._form.getValue(); // use that ref to get the form value
         if (value) {
@@ -77,6 +89,7 @@ export default class LoginScreen extends React.Component {
                 body: JSON.stringify(value),
             })
                 .then(response => {
+                    console.log("Fetching API LOGIN");
                     if (!response.ok) {
                         throw response;
                     }
@@ -84,7 +97,7 @@ export default class LoginScreen extends React.Component {
                 })
                 .then(json => {
                     Util.setToken(json.success.token);
-                    this.props.navigation.dispatch(this.resetAction);
+                    this.props.navigation.dispatch(this.resetActionLogin);
                 })
                 .catch(err => {
                     err.json().then(errorMessage => {
@@ -92,6 +105,14 @@ export default class LoginScreen extends React.Component {
                     });
                 })
         }
+    }
+
+    isLoaded() {
+        this.setState({ loaded: true })
+    }
+
+    isLoading() {
+        this.setState({ loaded: false })
     }
 
     signUpTrigger = () => {

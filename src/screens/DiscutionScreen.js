@@ -11,12 +11,12 @@ import { API_URL } from 'react-native-dotenv';
 
 export default class DiscutionScreen extends React.Component { 
   render() {
-    const id_host = this.props.navigation.getParam('id_host', 'NO-ID')
+    const id_user = this.props.navigation.getParam('id_user', 'NO-ID')
     return (
       <View style={{ flex: 1 }}>
             <Text>Discution</Text>
             <Text>API_URL={API_URL}</Text>
-            <Text>{id_host}</Text>
+            <Text>{id_user}</Text>
       </View>
     );
   }
