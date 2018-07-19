@@ -62,6 +62,7 @@ export default class AccommodationsScreen extends React.Component {
                 })
                 .catch(err => {
                     console.log("RIP");
+                    console.log(err);
                     err.json().then(errorMessage => {
                         console.log(errorMessage);
                     });
@@ -142,7 +143,7 @@ export default class AccommodationsScreen extends React.Component {
                         backgroundColor="red"
                     />
 
-                    <Text>Affichage de 125 accommodations</Text>
+                    <Text>Affichage de {this.state.accommodations.length} accommodations</Text>
 
                     <ListView
                         contentContainerStyle={styles.grid}

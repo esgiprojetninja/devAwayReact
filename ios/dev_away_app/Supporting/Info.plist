@@ -55,6 +55,11 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>51.38.51.32/index.php</key>
+			<string></string>
+		</dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
@@ -69,7 +74,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow dev_away_app to access your microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Allow dev_away_app to access your device's accelerometer</string>
+	<string>Allow dev_away_app to access your device&apos;s accelerometer</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Give dev_away_app permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>

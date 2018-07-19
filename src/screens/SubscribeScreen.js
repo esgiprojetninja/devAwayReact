@@ -9,6 +9,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import t from 'tcomb-form-native';
+import { API_URL } from 'react-native-dotenv';
 
 const Form = t.form.Form;
 
@@ -19,7 +20,7 @@ export default class LoginScreen extends React.Component {
 
         this.User = t.struct({
             email: t.String,
-            username: t.String,
+            userName: t.String,
             password: t.String,
             c_password: t.String,
             terms: t.Boolean
@@ -44,7 +45,7 @@ export default class LoginScreen extends React.Component {
                     hasError: false,
                     error: ""
                 },
-                username: {
+                userName: {
                     hasError: false,
                     error: ""
                 },
@@ -63,7 +64,7 @@ export default class LoginScreen extends React.Component {
     handleSubmit = () => {
         const value = this._form.getValue(); // use that ref to get the form value
         if (value) {
-            fetch('https://limitless-springs-83583.herokuapp.com/api/register', {
+            fetch(API_URL+'/api/register', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -78,9 +79,7 @@ export default class LoginScreen extends React.Component {
                 return response.json()  //we only get here if there is no error
             })
             .then( json => {
-                alert("success : "+json);
-                console.log(json);
-                this.props.dispatch(doSomethingWithResult(json))
+                this.props.navigation.navigate('LOGIN');
             })
             .catch( err => {
                 err.json().then( errorMessage => {

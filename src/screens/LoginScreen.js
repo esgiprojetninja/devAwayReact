@@ -80,6 +80,7 @@ export default class LoginScreen extends React.Component {
     handleSubmit = () => {
         const value = this._form.getValue(); // use that ref to get the form value
         if (value) {
+            console.log(API_URL);
             fetch(API_URL + '/api/login', {
                 method: 'POST',
                 headers: {

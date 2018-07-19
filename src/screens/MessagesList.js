@@ -27,6 +27,7 @@ export default class MessagesList extends React.Component {
       loaded: false,
       messages: {},
       tokenValue: "",
+      //myId: ''
     }
 
     this.resetAction = StackActions.reset({
@@ -56,14 +57,16 @@ export default class MessagesList extends React.Component {
             }
             throw response;
           }
+          console.log(response.json());
           return response.json();
         })
         .then(json => {
           this.state.messages = json;
+          //this.state.myId = json.myId;
           this.isLoaded();
-
         })
         .catch(err => {
+          console.log(err);
           err.json().then(errorMessage => {
             console.log(errorMessage);
           });
@@ -77,7 +80,7 @@ export default class MessagesList extends React.Component {
 
   _onPress = (id_user) => {
     this.props.navigation.navigate(
-      'DISCUTION',
+      'USERPROFILESCREEN',
       { id_user },
     );
   }
@@ -89,7 +92,7 @@ export default class MessagesList extends React.Component {
         messageContent = messageContent + " ...";
       }
       return (
-        <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(message.id)}>
+        <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(message.to.id)}>
           <View style={styles.containerImageText}>
             <View style={styles.containerImage}>
               <Image style={styles.headerAvatar} source={{ uri: "data:image/png;base64," + message.to.avatar }} />
@@ -110,7 +113,7 @@ export default class MessagesList extends React.Component {
         messageContent = messageContent + " ...";
       }
       return (
-        <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(message.id)}>
+        <TouchableOpacity style={styles.gridItem} onPress={() => this._onPress(message.from.id)}>
           <View style={styles.containerImageText}>
             <View style={styles.containerImage}>
               <Image style={styles.headerAvatar} source={{ uri: "data:image/png;base64," + message.from.avatar }} />

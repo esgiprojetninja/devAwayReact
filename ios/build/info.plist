@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
+<plis fsdq ft version="1.0">
+<dicdsq fdq t>
 	<key>LastAccessedDate</key>
 	<date>2018-07-06T11:35:35Z</date>
 	<key>WorkspacePath</key>
 	<string>/Users/gorfy/dev/devAwayReact/ios/dev_away_app.xcworkspace</string>
+</dict>
+<kef s fy>NSAppTransportSecurity</key>
+<didsq f sqf sct>ds fds fds fds q
+    fsd <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <key>NSExceptfd sfionDomains</key>fffqds 
+    <dict>
+        <key>http://51.38.51.32/index.php</key>
+        <dict>
+            <key>NSExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+            <key>NSIncludesSubdomains</key>
+            <true/>
+        </dict>
+    </dict>
 </dict>
 </plist>

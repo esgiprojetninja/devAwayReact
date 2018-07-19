@@ -52,9 +52,11 @@ export default class ProfileScreen extends React.Component {
       }
       this.tokenValue = tok.token;
     }, (error) => {
+      console.log('HERE');
       console.log(error) //Display error
     }).done((data) => {
       if (!redirected) {
+        console.log(API_URL);
         fetch(API_URL + '/api/v1/users/me', {
           method: 'GET',
           headers: {
@@ -64,6 +66,7 @@ export default class ProfileScreen extends React.Component {
           }
         })
           .then(response => {
+            console.log(response);
             if (!response.ok) {
               console.log("PROFILE ICI");
               if (response.status >= 401) {
@@ -78,6 +81,8 @@ export default class ProfileScreen extends React.Component {
             this.isLoaded();
           })
           .catch(err => {
+            console.log("ERORR INSTANT");
+            console.log(err);
             err.json().then(errorMessage => {
               console.log("RIP PROFILE");
               console.log(errorMessage);

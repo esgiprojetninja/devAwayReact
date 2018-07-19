@@ -17,8 +17,10 @@ import { API_URL } from 'react-native-dotenv';
 import { Font } from 'expo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Moment from 'moment';
-
+import t from 'tcomb-form-native';
 import Util from './../utils/util';
+
+const Form = t.form.Form;
 
 export default class UserProfileScreen extends React.Component {
     constructor(props) {
@@ -27,9 +29,6 @@ export default class UserProfileScreen extends React.Component {
 
         super(props);
 
-        this.state = { loaded: false, modalVisible: true }
-        tokenValue = "";
-        user = {};
         let redirected = false;
         this.resetAction = StackActions.reset({
             index: 0,
@@ -40,28 +39,66 @@ export default class UserProfileScreen extends React.Component {
             headerRightCustom: ""
         });
 
+        this.User = t.struct({
+            firstName: t.String,
+            lastName: t.String,
+            userName: t.String,
+            email: t.String
+        });
+
+        this.options = {
+            fields: {
+                email: {
+                    hasError: false,
+                    error: ""
+                },
+                firstName: {
+                    hasError: false,
+                    error: ""
+                },
+                lastName: {
+                    hasError: false,
+                    error: ""
+                },
+                userName: {
+                    hasError: false,
+                    error: ""
+                },
+            },
+        };
+
+        this.state = {
+            loaded: false,
+            modalVisible: false,
+            tokenValue: "",
+            user: {},
+            options: this.options,
+        }
+
         const token = Util.getToken().then(tok => {
             if (tok.status == "error" || tok.token == null) {
                 console.log("NEED REDIRECT");
                 redirected = true;
                 this.props.navigation.dispatch(this.resetAction);
             }
-            this.tokenValue = tok.token;
+            this.state.tokenValue = tok.token;
         }, (error) => {
             console.log(error) //Display error
         }).done((data) => {
             if (!redirected) {
+                console.log(id_user);
                 fetch(API_URL + '/api/v1/users/' + id_user, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + this.tokenValue,
+                        'Authorization': 'Bearer ' + this.state.tokenValue,
                     }
                 })
                     .then(response => {
                         if (!response.ok) {
-                            if (response.status >= 401) {
+                            console.log(reponse);
+                            if (response.status >= 401 && response.status != 404) {
                                 this.userLogOut();
                             }
                             throw response;
@@ -69,7 +106,13 @@ export default class UserProfileScreen extends React.Component {
                         return response.json();
                     })
                     .then(json => {
-                        this.user = json;
+                        this.state.user = json;
+                        this.state.value= {
+                            email: this.state.user.email,
+                            lastName: this.state.user.lastName,
+                            firstName:this.state.user.firstName,
+                            userName:this.state.user.userName
+                        }
                         this.isLoaded();
                         this.props.navigation.setParams({
                             headerRightCustom: (<TouchableOpacity onPress={() => this.setModalVisible(true)}>
@@ -106,6 +149,36 @@ export default class UserProfileScreen extends React.Component {
         }
     };
 
+    handleSubmit = () => {
+        const value = this._form.getValue(); // use that ref to get the form value
+        if (value) {
+            fetch(API_URL + '/api/users/' + this.state.user.id, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + this.state.tokenValue,
+                },
+                body: JSON.stringify(value),
+            })
+                .then(response => {
+                    console.log("Fetching API USER UPDATE");
+                    if (!response.ok) {
+                        throw response;
+                    }
+                    return response.json()  //we only get here if there is no error
+                })
+                .then(json => {
+                    console.log("DONE");
+                })
+                .catch(err => {
+                    err.json().then(errorMessage => {
+                        console.log(errorMessage);
+                    });
+                })
+        }
+    }
+
     componentDidMount() {
         Font.loadAsync({
             'roboto': require('./../../public/fonts/Roboto-Regular.ttf'),
@@ -114,6 +187,10 @@ export default class UserProfileScreen extends React.Component {
 
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
+    }
+
+    closeModal() {
+        this.setState({ modalVisible: false });
     }
 
     isLoaded() {
@@ -129,10 +206,34 @@ export default class UserProfileScreen extends React.Component {
     render() {
         const { state } = this.props.navigation;
         Moment.locale('en');
+        console.log("ALED"+this.state.modalVisible);
         if (this.state.loaded) {
+            let verifiedInformations = (<Text>None</Text>)
+            if (this.state.user.emailVerified == 1) {
+                verifiedInformations = (<Text>E-mail</Text>);
+            }
             return (
                 <View style={styles.containerHeader}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <View>
+                            <Text style={styles.firstName}>{this.state.user.firstName} {this.state.user.lastName}</Text>
+                            <Text style={{ marginTop: 10, fontFamily: 'roboto' }} > {this.state.user.city}, {this.state.user.country} </Text>
+                        </View>
+                        <Image style={styles.headerAvatar} source={{ uri: "data:image/png;base64," + this.state.user.avatar }} />
+                    </View>
 
+                    <View style={{ flex: 1, marginTop: 50 }}>
+                        <Text style={{ fontSize: 16, marginBottom: 10, color: '#343434', fontFamily: 'roboto' }}>Member since</Text>
+                        <Text style={{ fontSize: 16, marginBottom: 10, color: '#343434', fontFamily: 'roboto' }}> {Moment(this.state.user.created_at).format('MMMM YYYY')} </Text>
+
+                        <View style={styles.separatorFullWidthGrey} />
+
+                        <View style={{ flexDirection: 'column', justifyContent: 'space-between', paddingTop: 2 }}>
+                            <Text style={styles.notificationText}>Verified informations</Text>
+                            {verifiedInformations}
+                        </View>
+
+                    </View>
                     <Modal
                         animationType="slide"
                         transparent={false}
@@ -141,51 +242,24 @@ export default class UserProfileScreen extends React.Component {
                         <View>
                             <View style={{ height: 80, backgroundColor: 'white' }}>
                                 <View style={{ marginTop: 40, flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
-                                    <Ionicons style={{ margin: 0, padding: 0 }} name={"ios-close"} size={45} color={'black'} onPress={() => {
-                                        this.setModalVisible(!this.state.modalVisible);
-                                    }} />
+                                    <Ionicons style={{ margin: 0, padding: 0 }} name={"ios-close"} size={45} color={'black'} onPress={() => this.closeModal()} />
                                     <Text style={{ marginTop: 14 }}>Update profile</Text>
                                     <Text style={{ marginTop: 14 }}>Save</Text>
                                 </View>
                             </View>
 
                             <View style={{ width: '100%', backgroundColor: '#D0D0D0' }}>
-                                <Image style={{ height: 250, width: '80%', alignSelf: 'center' }} source={{ uri: "data:image/png;base64," + this.user.avatar }} />
+                                <Image style={{ height: 250, width: '80%', alignSelf: 'center' }} source={{ uri: "data:image/png;base64," + this.state.user.avatar }} />
                             </View>
 
-                            <View style={{ marginTop: 30 }}>
-                                <Text>First name</Text>
-                                <Text>{this.user.firstName}</Text>
-                            </View>
-
-                            <View style={{ marginTop: 30 }}>
-                                <Text>Last name</Text>
-                                <Text>{this.user.lastName}</Text>
-                            </View>
+                            <Form
+                                ref={c => this._form = c} // assign a ref
+                                type={this.User}
+                                options={this.state.options}
+                                value={this.state.value}
+                            />
                         </View>
                     </Modal>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <View>
-                            <Text style={styles.firstName}>{this.user.firstName} {this.user.lastName[0].toUpperCase() + this.user.lastName.slice(1).toLowerCase()}</Text>
-                            <Text style={{ marginTop: 10, fontFamily: 'roboto' }} > {this.user.city}, {this.user.country} </Text>
-                        </View>
-                        <Image style={styles.headerAvatar} source={{ uri: "data:image/png;base64," + this.user.avatar }} />
-                    </View>
-
-                    <View style={{ flex: 1, marginTop: 50 }}>
-                        <Text style={{ fontSize: 16, marginBottom: 10, color: '#343434', fontFamily: 'roboto' }}>Member since</Text>
-                        <Text style={{ fontSize: 16, marginBottom: 10, color: '#343434', fontFamily: 'roboto' }}> {Moment(this.user.created_at).format('MMMM YYYY')} </Text>
-
-                        <View style={styles.separatorFullWidthGrey} />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: 2 }}>
-                            <Text style={styles.notificationText}>Verified informations</Text>
-                            <Text>E-mail adress</Text>
-                        </View>
-
-                    </View>
-
                 </View >
             );
         } else {
