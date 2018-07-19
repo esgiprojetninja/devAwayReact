@@ -1,0 +1,4 @@
+dependencies: \
+  /Users/gorfy/dev/devAwayReact/node_modules/react-native/ReactCommon/fabric/debug/DebugStringConvertible.cpp \
+  /Users/gorfy/dev/devAwayReact/ios/Pods/Target\ Support\ Files/React/React-prefix.pch \
+  /Users/gorfy/dev/devAwayReact/node_modules/react-native/ReactCommon/fabric/debug/DebugStringConvertible.h

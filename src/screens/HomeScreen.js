@@ -1,22 +1,50 @@
 import React from 'react';
-import { 
+import {
   StyleSheet,
   Text,
   View,
   ImageBackground,
   Image,
-  ScrollView,
-  Button
+  StatusBar,
+  Button,
+  TextInput
 } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default class HomeScreen extends React.Component { 
+export default class HomeScreen extends React.Component {
+  static navigationOptions = {
+    headerTransparent: {
+      backgroundColor: 'transparent',
+    },
+    headerStyle: {
+      borderBottomWidth: 0,
+    }
+  };
+  accommodationsListTrigger = () => {
+    const { navigate } = this.props.navigation;
+    navigate('ACCOMMODATIONSLIST');
+  }
+
   render() {
+    console.log("Load home");
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar
+          barStyle="light-content"
+        />
         <ImageBackground
           style={styles.background}
           source={require("../../public/img/home-background.png")}
         >
+          <View style={styles.searchSection}>
+            <Ionicons style={styles.searchIcon} name="ios-search" size={20} color="#000" />
+            <TextInput
+              style={styles.input}
+              placeholder="User Nickname"
+              onChangeText={(searchString) => { console.log(searchString) }}
+              underlineColorAndroid="transparent"
+            />
+          </View>
           <View style={styles.wrapper}>
             <View style={styles.wrapperLogoBrand}>
               <Image
@@ -34,7 +62,7 @@ export default class HomeScreen extends React.Component {
             <Text style={styles.headerTextOne}>
               Use our skills to share a human
             </Text>
-            <Text style={styles.headerTextTwo}>experience, it's a win-win</Text>
+            <Text style={styles.headerTextTwo} onPress={this.accommodationsListTrigger}>experience, it's a win-win</Text>
           </View>
         </ImageBackground>
       </View>
@@ -52,6 +80,26 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     marginTop: 130
+  },
+  searchSection: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    position: 'absolute',
+    top: 70,
+    left: 30,
+    right: 30,
+    height: 40,
+  },
+  searchIcon: {
+    padding: 10,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#fff',
+    color: '#424242',
   },
   wrapperLogoBrand: {
     flexDirection: "row" //Pour que le logo et la brand soit sur la meme ligne
